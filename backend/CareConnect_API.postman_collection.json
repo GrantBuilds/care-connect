@@ -1,0 +1,685 @@
+{
+    "info": {
+        "name": "CareConnect API",
+        "_postman_id": "careconnect-001",
+        "description": "Complete API collection for CareConnect",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Auth",
+            "item": [
+                {
+                    "name": "Register Manager",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\"\n}"
+                        },
+                        "url": {
+                            "raw": "http://localhost:4000/auth/register",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "4000",
+                            "path": [
+                                "auth",
+                                "register"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Login Manager",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code === 200) {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.environment.set(\"auth_token\", jsonData.token);",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\"\n}"
+                        },
+                        "url": {
+                            "raw": "http://localhost:4000/auth/login",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "4000",
+                            "path": [
+                                "auth",
+                                "login"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Shops",
+            "item": [
+                {
+                    "name": "Get All Shops",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:4000/shops",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "4000",
+                            "path": [
+                                "shops"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Shop by ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:4000/shops/1",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "4000",
+                            "path": [
+                                "shops",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Shop",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Main Street Barbershop\",\n  \"location\": \"123 Main St, Accra\",\n  \"qr_code_link\": \"https://example.com/qr/shop1\"\n}"
+                        },
+                        "url": {
+                            "raw": "http://localhost:4000/shops",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "4000",
+                            "path": [
+                                "shops"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Shop",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Updated Shop Name\",\n  \"location\": \"New Location\"\n}"
+                        },
+                        "url": {
+                            "raw": "http://localhost:4000/shops/1",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "4000",
+                            "path": [
+                                "shops",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Shop",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "http://localhost:4000/shops/1",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "4000",
+                            "path": [
+                                "shops",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get My Shops",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "http://localhost:4000/shops/my-shops",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "4000",
+                            "path": [
+                                "shops",
+                                "my-shops"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Workers",
+            "item": [
+                {
+                    "name": "Get All Workers",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:4000/workers",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "4000",
+                            "path": [
+                                "workers"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Worker by ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:4000/workers/1",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "4000",
+                            "path": [
+                                "workers",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Workers by Shop",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:4000/workers/shop/1",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "4000",
+                            "path": [
+                                "workers",
+                                "shop",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Worker",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"shop_id\": 1,\n  \"name\": \"Jane Smith\",\n  \"role\": \"Barber\",\n  \"photo_url\": \"https://example.com/photos/jane.jpg\"\n}"
+                        },
+                        "url": {
+                            "raw": "http://localhost:4000/workers",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "4000",
+                            "path": [
+                                "workers"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Worker with Image",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "shop_id",
+                                    "value": "1",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "name",
+                                    "value": "Mike Johnson",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "role",
+                                    "value": "Stylist",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "photo",
+                                    "type": "file",
+                                    "src": []
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "http://localhost:4000/workers/with-image",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "4000",
+                            "path": [
+                                "workers",
+                                "with-image"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Worker",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Updated Name\",\n  \"role\": \"Senior Barber\"\n}"
+                        },
+                        "url": {
+                            "raw": "http://localhost:4000/workers/1",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "4000",
+                            "path": [
+                                "workers",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Worker",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "http://localhost:4000/workers/1",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "4000",
+                            "path": [
+                                "workers",
+                                "1"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Ratings",
+            "item": [
+                {
+                    "name": "Get All Ratings",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:4000/ratings",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "4000",
+                            "path": [
+                                "ratings"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Rating by ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:4000/ratings/1",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "4000",
+                            "path": [
+                                "ratings",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Ratings by Worker",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:4000/ratings/worker/1",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "4000",
+                            "path": [
+                                "ratings",
+                                "worker",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Average Rating",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:4000/ratings/worker/1/average",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "4000",
+                            "path": [
+                                "ratings",
+                                "worker",
+                                "1",
+                                "average"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Rating",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"worker_id\": 1,\n  \"rating\": 5,\n  \"comment\": \"Excellent service!\"\n}"
+                        },
+                        "url": {
+                            "raw": "http://localhost:4000/ratings",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "4000",
+                            "path": [
+                                "ratings"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Rating",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:4000/ratings/1",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "4000",
+                            "path": [
+                                "ratings",
+                                "1"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Upload",
+            "item": [
+                {
+                    "name": "Upload Single Image",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "image",
+                                    "type": "file",
+                                    "src": []
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "http://localhost:4000/upload/image",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "4000",
+                            "path": [
+                                "upload",
+                                "image"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Upload Multiple Images",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "images",
+                                    "type": "file",
+                                    "src": []
+                                },
+                                {
+                                    "key": "images",
+                                    "type": "file",
+                                    "src": []
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "http://localhost:4000/upload/images",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "4000",
+                            "path": [
+                                "upload",
+                                "images"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Image",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "http://localhost:4000/upload/image/filename.jpg",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "4000",
+                            "path": [
+                                "upload",
+                                "image",
+                                "filename.jpg"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Health Check",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:4000/",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "4000",
+                    "path": [
+                        ""
+                    ]
+                }
+            }
+        }
+    ]
+}
