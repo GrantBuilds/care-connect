@@ -38,7 +38,7 @@ const SignInPage = () => {
             <p className="text-gray-600 mb-2">Our authentication system is currently being set up.</p>
             <p className="text-gray-500 text-sm mb-6">CareConnect will be fully live very soon. Stay tuned!</p>
             <button
-              onClick={() => { setShowModal(false); navigate('/'); }}
+              onClick={() => { setShowModal(false); navigate('/manager-dashboard'); }}
               className="w-full py-3 bg-[#294F7B] text-white font-semibold rounded-xl hover:bg-[#1d3855] transition-all"
             >
               Back to Home
