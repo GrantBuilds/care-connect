@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import {
-    User, Bell, Lock, Palette, Globe, CreditCard,
-    Shield, HelpCircle, Mail, Phone, Camera, Save, Eye, EyeOff
+    User, Bell, Lock, CreditCard,
+    HelpCircle, Mail, Phone, Camera, Save, Eye, EyeOff,
+    CheckCircle2, Clock3, Smartphone, Wallet, AlertCircle
 } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 
@@ -33,6 +34,46 @@ const Settings = () => {
         confirmPassword: ''
     });
 
+    const billingPlans = [
+        {
+            id: 'basic_monthly',
+            name: 'Basic',
+            amount: 99,
+            currency: 'GHS',
+            durationLabel: '30 days access',
+            description: 'For smaller repair shops getting started with CareConnect.',
+            features: ['1 shop profile', 'Worker visibility', 'Ratings overview']
+        },
+        {
+            id: 'pro_monthly',
+            name: 'Pro',
+            amount: 199,
+            currency: 'GHS',
+            durationLabel: '30 days access',
+            description: 'For growing teams that want more visibility and control.',
+            features: ['Everything in Basic', 'Priority support', 'Advanced team tracking']
+        }
+    ];
+
+    const mobileMoneyProviders = [
+        { id: 'mtn', label: 'MTN MoMo' },
+        { id: 'atl', label: 'AirtelTigo Money' },
+        { id: 'vod', label: 'Telecel Cash' }
+    ];
+
+    const [billingState, setBillingState] = useState({
+        selectedPlanId: billingPlans[0].id,
+        billingEmail: profile.email,
+        phone: profile.phone,
+        provider: mobileMoneyProviders[0].id,
+        currentPlan: 'Trial',
+        subscriptionStatus: 'inactive',
+        renewalDate: 'Not active',
+        paymentStatus: 'idle',
+        reference: '',
+        message: ''
+    });
+
     const handleProfileChange = (e) => {
         const { name, value } = e.target;
         setProfile(prev => ({ ...prev, [name]: value }));
@@ -46,6 +87,33 @@ const Settings = () => {
         const { name, value } = e.target;
         setPasswords(prev => ({ ...prev, [name]: value }));
     };
+
+    const handleBillingChange = (e) => {
+        const { name, value } = e.target;
+        setBillingState(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handlePlanSelect = (planId) => {
+        setBillingState(prev => ({ ...prev, selectedPlanId: planId }));
+    };
+
+    const handleMobileMoneyPayment = () => {
+        const selectedPlan = billingPlans.find(plan => plan.id === billingState.selectedPlanId);
+        const reference = `CC-GH-${Date.now().toString().slice(-8)}`;
+
+        setBillingState(prev => ({
+            ...prev,
+            currentPlan: selectedPlan.name,
+            subscriptionStatus: 'pending',
+            paymentStatus: 'pending',
+            renewalDate: 'Awaiting confirmation',
+            reference,
+            message: `Approve the ${selectedPlan.currency} ${selectedPlan.amount.toFixed(2)} ${selectedPlan.name} payment on your phone to complete activation.`
+        }));
+    };
+
+    const selectedBillingPlan = billingPlans.find(plan => plan.id === billingState.selectedPlanId);
+    const selectedProvider = mobileMoneyProviders.find(provider => provider.id === billingState.provider);
 
     const settingsSections = [
         { id: 'profile', label: 'Profile', icon: User },
@@ -298,6 +366,241 @@ const Settings = () => {
         </div>
     );
 
+    const BillingSection = () => (
+        <div className="space-y-6">
+            <div>
+                <h2 className="text-xl font-bold text-gray-900 mb-2">Billing & Subscription</h2>
+                <p className="text-gray-600">Manage your Ghana mobile money subscription in Ghana cedis.</p>
+            </div>
+
+            <div className="grid xl:grid-cols-[1.15fr_0.85fr] gap-6">
+                <div className="space-y-6">
+                    <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+                            <div>
+                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-[#294F7B] text-sm font-medium mb-4">
+                                    <Wallet className="w-4 h-4" />
+                                    Ghana Mobile Money
+                                </div>
+                                <h3 className="font-semibold text-gray-900 text-lg mb-2">Current Subscription</h3>
+                                <p className="text-gray-600">Billing stays aligned with your current account setup and uses Ghana-first providers only.</p>
+                            </div>
+                            <div className={`px-4 py-2 rounded-lg text-sm font-semibold capitalize ${billingState.subscriptionStatus === 'active'
+                                    ? 'bg-emerald-50 text-emerald-700'
+                                    : billingState.subscriptionStatus === 'pending'
+                                        ? 'bg-amber-50 text-amber-700'
+                                        : 'bg-gray-100 text-gray-700'
+                                }`}>
+                                {billingState.subscriptionStatus}
+                            </div>
+                        </div>
+
+                        <div className="grid sm:grid-cols-3 gap-4 mt-6">
+                            <div className="rounded-xl border border-gray-200 p-4">
+                                <p className="text-sm text-gray-500 mb-1">Plan</p>
+                                <p className="font-semibold text-gray-900">{billingState.currentPlan}</p>
+                            </div>
+                            <div className="rounded-xl border border-gray-200 p-4">
+                                <p className="text-sm text-gray-500 mb-1">Renewal</p>
+                                <p className="font-semibold text-gray-900">{billingState.renewalDate}</p>
+                            </div>
+                            <div className="rounded-xl border border-gray-200 p-4">
+                                <p className="text-sm text-gray-500 mb-1">Currency</p>
+                                <p className="font-semibold text-gray-900">Ghana Cedis (GHS)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                        <div className="flex items-center gap-3 mb-4">
+                            <CreditCard className="w-5 h-5 text-[#294F7B]" />
+                            <h3 className="font-semibold text-gray-900">Choose a Plan</h3>
+                        </div>
+
+                        <div className="grid lg:grid-cols-2 gap-4">
+                            {billingPlans.map((plan) => {
+                                const isSelected = plan.id === billingState.selectedPlanId;
+
+                                return (
+                                    <button
+                                        key={plan.id}
+                                        type="button"
+                                        onClick={() => handlePlanSelect(plan.id)}
+                                        className={`text-left rounded-xl border p-5 transition-all ${isSelected
+                                                ? 'border-[#294F7B] bg-blue-50/60 shadow-sm'
+                                                : 'border-gray-200 hover:border-[#294F7B]/40 hover:bg-gray-50'
+                                            }`}
+                                    >
+                                        <div className="flex items-start justify-between gap-4 mb-3">
+                                            <div>
+                                                <p className="font-semibold text-gray-900 text-lg">{plan.name}</p>
+                                                <p className="text-sm text-gray-500">{plan.durationLabel}</p>
+                                            </div>
+                                            {isSelected && <CheckCircle2 className="w-5 h-5 text-[#294F7B]" />}
+                                        </div>
+                                        <p className="text-3xl font-bold text-gray-900 mb-2">
+                                            GHS {plan.amount.toFixed(2)}
+                                        </p>
+                                        <p className="text-sm text-gray-600 mb-4">{plan.description}</p>
+                                        <div className="space-y-2">
+                                            {plan.features.map((feature) => (
+                                                <div key={feature} className="flex items-center gap-2 text-sm text-gray-700">
+                                                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                                                    <span>{feature}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </div>
+
+                    <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                        <div className="flex items-center gap-3 mb-4">
+                            <Smartphone className="w-5 h-5 text-[#294F7B]" />
+                            <h3 className="font-semibold text-gray-900">Mobile Money Payment</h3>
+                        </div>
+
+                        <div className="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Billing Email</label>
+                                <div className="relative">
+                                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                                    <input
+                                        type="email"
+                                        name="billingEmail"
+                                        value={billingState.billingEmail}
+                                        onChange={handleBillingChange}
+                                        className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#294F7B] focus:border-transparent outline-none"
+                                        placeholder="billing@shop.com"
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                                <div className="relative">
+                                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                                    <input
+                                        type="tel"
+                                        name="phone"
+                                        value={billingState.phone}
+                                        onChange={handleBillingChange}
+                                        className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#294F7B] focus:border-transparent outline-none"
+                                        placeholder="+233 55 000 0000"
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Provider</label>
+                                <select
+                                    name="provider"
+                                    value={billingState.provider}
+                                    onChange={handleBillingChange}
+                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#294F7B] focus:border-transparent outline-none bg-white"
+                                >
+                                    {mobileMoneyProviders.map((provider) => (
+                                        <option key={provider.id} value={provider.id}>
+                                            {provider.label}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Amount</label>
+                                <div className="w-full px-4 py-3 border border-gray-200 rounded-lg bg-gray-50 text-gray-900 font-semibold">
+                                    GHS {selectedBillingPlan.amount.toFixed(2)}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                            <div className="text-sm text-gray-600">
+                                <span className="font-medium text-gray-900">{selectedProvider.label}</span> will receive the payment prompt for your selected plan.
+                            </div>
+                            <button
+                                type="button"
+                                onClick={handleMobileMoneyPayment}
+                                className="flex items-center justify-center gap-2 px-6 py-3 bg-[#294F7B] text-white font-semibold rounded-lg hover:bg-[#1d3855] transition-all"
+                            >
+                                <Smartphone className="w-5 h-5" />
+                                Pay GHS {selectedBillingPlan.amount.toFixed(2)}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="space-y-6">
+                    <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                        <h3 className="font-semibold text-gray-900 mb-4">Payment Summary</h3>
+                        <div className="space-y-4">
+                            <div className="flex items-center justify-between text-sm">
+                                <span className="text-gray-500">Plan</span>
+                                <span className="font-medium text-gray-900">{selectedBillingPlan.name}</span>
+                            </div>
+                            <div className="flex items-center justify-between text-sm">
+                                <span className="text-gray-500">Provider</span>
+                                <span className="font-medium text-gray-900">{selectedProvider.label}</span>
+                            </div>
+                            <div className="flex items-center justify-between text-sm">
+                                <span className="text-gray-500">Billing cycle</span>
+                                <span className="font-medium text-gray-900">{selectedBillingPlan.durationLabel}</span>
+                            </div>
+                            <div className="pt-4 border-t border-gray-100 flex items-center justify-between">
+                                <span className="text-gray-900 font-semibold">Total</span>
+                                <span className="text-2xl font-bold text-[#294F7B]">GHS {selectedBillingPlan.amount.toFixed(2)}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                        <div className="flex items-center gap-3 mb-4">
+                            <Clock3 className="w-5 h-5 text-[#294F7B]" />
+                            <h3 className="font-semibold text-gray-900">Payment Status</h3>
+                        </div>
+
+                        {billingState.paymentStatus === 'idle' && (
+                            <div className="rounded-xl border border-dashed border-gray-300 p-5 text-sm text-gray-600">
+                                Select a plan, confirm your provider, and start the charge. Your approval prompt will arrive on your phone.
+                            </div>
+                        )}
+
+                        {billingState.paymentStatus === 'pending' && (
+                            <div className="space-y-4">
+                                <div className="rounded-xl bg-amber-50 border border-amber-200 p-4">
+                                    <div className="flex items-start gap-3">
+                                        <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5" />
+                                        <div>
+                                            <p className="font-semibold text-amber-900">Approve this payment on your phone</p>
+                                            <p className="text-sm text-amber-800 mt-1">{billingState.message}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="rounded-xl border border-gray-200 p-4 space-y-3 text-sm">
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-gray-500">Reference</span>
+                                        <span className="font-medium text-gray-900">{billingState.reference}</span>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-gray-500">Provider</span>
+                                        <span className="font-medium text-gray-900">{selectedProvider.label}</span>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-gray-500">Phone</span>
+                                        <span className="font-medium text-gray-900">{billingState.phone}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+
     const PlaceholderSection = ({ title }) => (
         <div className="space-y-6">
             <div>
@@ -325,7 +628,7 @@ const Settings = () => {
             case 'security':
                 return <SecuritySection />;
             case 'billing':
-                return <PlaceholderSection title="Billing & Subscription" />;
+                return <BillingSection />;
             case 'help':
                 return <PlaceholderSection title="Help & Support" />;
             default:
